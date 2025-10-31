@@ -1,0 +1,58 @@
+# Node.js (if any)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python (if any)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.pytest_cache/
+
+# Git
+.git/
+.gitignore
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env*
+!.env.example
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Project specific
+.specify/
+.windsurf/
+specs/
+README.md
+LICENSE
+
+# Temporary files
+*.tmp
+*.bak

@@ -1,0 +1,5 @@
+[tikv]
+addr = "0.0.0.0:20160"
+advertise-addr = "tikv1:20160"
+data-dir = "/data/tikv1"
+pd-endpoints = "pd:2379"

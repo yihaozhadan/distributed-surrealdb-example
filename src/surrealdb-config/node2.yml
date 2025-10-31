@@ -1,0 +1,6 @@
+datastore:
+  tikv:
+    path: "pd:2379"
+
+capabilities:
+  allow_guests: true

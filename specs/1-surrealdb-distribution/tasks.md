@@ -32,7 +32,7 @@ description: "Task list for SurrealDB Distribution POC implementation"
 
 **Independent Test**: Docker Compose file validates and services start without errors
 
-- [ ] T001 Create docker-compose.yml with TiKV and SurrealDB services in src/docker-compose.yml
+- [x] T001 Create docker-compose.yml with TiKV and SurrealDB services in src/docker-compose.yml
 - [ ] T002 [P] Create TiKV configuration files in src/tikv-config/pd.yml, tikv1.yml, tikv2.yml, tikv3.yml
 - [ ] T003 [P] Create SurrealDB configuration files in src/surrealdb-config/node1.yml, node2.yml
 - [ ] T004 [P] Add health checks and depends_on relationships to docker-compose.yml

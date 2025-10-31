@@ -1,0 +1,140 @@
+name: surrealdb-cluster
+services:
+  pd:
+    image: pingcap/pd:latest
+    container_name: surrealdb-pd
+    ports:
+      - "2379:2379"
+    volumes:
+      - pd-data:/data
+      - ./tikv-config/pd.yml:/pd.toml
+    command:
+      - --name=pd
+      - --data-dir=/data/pd
+      - --client-urls=http://0.0.0.0:2379
+      - --advertise-client-urls=http://pd:2379
+      - --peer-urls=http://0.0.0.0:2380
+      - --advertise-peer-urls=http://pd:2380
+      - --initial-cluster=pd=http://pd:2380
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2379/pd/api/v1/version"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  tikv1:
+    image: pingcap/tikv:latest
+    container_name: surrealdb-tikv1
+    depends_on:
+      pd:
+        condition: service_healthy
+    ports:
+      - "20160:20160"
+    volumes:
+      - tikv1-data:/data
+      - ./tikv-config/tikv1.yml:/tikv.toml
+    command:
+      - --addr=0.0.0.0:20160
+      - --advertise-addr=tikv1:20160
+      - --data-dir=/data/tikv1
+      - --pd=pd:2379
+
+  tikv2:
+    image: pingcap/tikv:latest
+    container_name: surrealdb-tikv2
+    depends_on:
+      pd:
+        condition: service_healthy
+    ports:
+      - "20161:20160"
+    volumes:
+      - tikv2-data:/data
+      - ./tikv-config/tikv2.yml:/tikv.toml
+    command:
+      - --addr=0.0.0.0:20160
+      - --advertise-addr=tikv2:20160
+      - --data-dir=/data/tikv2
+      - --pd=pd:2379
+
+  tikv3:
+    image: pingcap/tikv:latest
+    container_name: surrealdb-tikv3
+    depends_on:
+      pd:
+        condition: service_healthy
+    ports:
+      - "20162:20160"
+    volumes:
+      - tikv3-data:/data
+      - ./tikv-config/tikv3.yml:/tikv.toml
+    command:
+      - --addr=0.0.0.0:20160
+      - --advertise-addr=tikv3:20160
+      - --data-dir=/data/tikv3
+      - --pd=pd:2379
+
+  surrealdb1:
+    image: surrealdb/surrealdb:latest
+    container_name: surrealdb-node1
+    depends_on:
+      tikv1:
+        condition: service_started
+      tikv2:
+        condition: service_started
+      tikv3:
+        condition: service_started
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./surrealdb-config/node1.yml:/surrealdb.yml
+    environment:
+      - SURREAL_CAPS_ALLOW_EXPERIMENTAL=graphql
+    command:
+      - start
+      - --user=root
+      - --pass=root
+      - --bind=0.0.0.0:8000
+      - --log=info
+      - tikv://pd:2379
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/version"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  surrealdb2:
+    image: surrealdb/surrealdb:latest
+    container_name: surrealdb-node2
+    depends_on:
+      surrealdb1:
+        condition: service_healthy
+      tikv1:
+        condition: service_started
+      tikv2:
+        condition: service_started
+      tikv3:
+        condition: service_started
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./surrealdb-config/node2.yml:/surrealdb.yml
+    environment:
+      - SURREAL_CAPS_ALLOW_EXPERIMENTAL=graphql
+    command:
+      - start
+      - --user=root
+      - --pass=root
+      - --bind=0.0.0.0:8000
+      - --log=info
+      - tikv://pd:2379
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/version"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  pd-data:
+  tikv1-data:
+  tikv2-data:
+  tikv3-data:
