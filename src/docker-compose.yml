@@ -97,7 +97,7 @@ services:
       - --log=info
       - tikv://pd:2379
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/version"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -128,7 +128,7 @@ services:
       - --log=info
       - tikv://pd:2379
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/version"]
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       interval: 30s
       timeout: 10s
       retries: 5

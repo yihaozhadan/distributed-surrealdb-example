@@ -1,0 +1,2 @@
+#V2
+DEFINE NAMESPACE test; USE NS test; DEFINE DATABASE test;
